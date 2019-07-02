@@ -8,7 +8,7 @@ let test2 = kame_no_ashi 3 = 12
 let test3 = kame_no_ashi 10 = 40
 
 (*
-# #use "src/kame_no_ashi.ml" ;;
+# #use "src/chapter4/kame_no_ashi.ml" ;;
 val kame_no_ashi : int -> int = <fun>
 val test1 : bool = true
 val test2 : bool = true
