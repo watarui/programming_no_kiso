@@ -17,6 +17,8 @@ echo "alias ocaml='rlwrap ocaml'" >> ~/.zshrc
 
 opam init
 eval $(opam env)
+opam install merlin
+opam user-setup install
 
 code --install-extension freebroccolo.reasonml
 ```

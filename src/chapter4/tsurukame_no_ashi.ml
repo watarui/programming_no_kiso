@@ -8,7 +8,7 @@ let test2 = tsurukame_no_ashi 3 4 = 22
 let test3 = tsurukame_no_ashi 10 10 = 60
 
 (*
-# #use "src/tsurukame_no_ashi.ml" ;;
+# #use "src/chapter4/tsurukame_no_ashi.ml" ;;
 val tsurukame_no_ashi : int -> int -> int = <fun>
 val test1 : bool = true
 val test2 : bool = true
