@@ -14,6 +14,7 @@ brew install darcs
 brew install rlwrap
 
 echo "alias ocaml='rlwrap ocaml'" >> ~/.zshrc
+echo "alias o='ocaml'" >> ~/.zshrc
 
 opam init
 eval $(opam env)
