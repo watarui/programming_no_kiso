@@ -30,3 +30,11 @@ let person3 = {
     birthday = "0229";
     blood = "A";
 }
+
+let person4 = {
+    name = "oya";
+    height = 155.8;
+    weight = 55.5;
+    birthday = "0514";
+    blood = "A";
+}
