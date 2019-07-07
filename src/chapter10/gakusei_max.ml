@@ -11,7 +11,7 @@ let rec gakusei_max lst =
   match lst with
   | [] -> {namae = ""; tensuu = min_int; seiseki = ""}
   | {namae = n; tensuu = t; seiseki = s} as g :: rest ->
-    let g_max = gakusei_max rest in
+    let g_max = gakusei_max rest in (* 局所変数 *)
     match g_max with
     {namae = n_max; tensuu = t_max; seiseki = s_max} ->
     if t_max < t
