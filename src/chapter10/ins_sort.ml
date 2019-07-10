@@ -1,5 +1,5 @@
 (* insert lst n *)
-#use "src/chapter9/insert.ml"
+#use "src/chapter10/insert.ml"
 
 (* 目的 : 整数のリストを受け取ったら、それを昇順に整列したリストを返す（挿入法） *)
 (* ins_sort : int * list -> int * list *)
