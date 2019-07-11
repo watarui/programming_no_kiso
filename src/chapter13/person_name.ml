@@ -13,7 +13,7 @@ let get_name person =
 
 (* 目的 : person_t 型のデータのリストを受け取ったら、nameのリストを返す *)
 (* person_name : person_t list -> string -> string list *)
-let rec person_name persons =
+let person_name persons =
   List.map get_name persons
 
 (* test *)
