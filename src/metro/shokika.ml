@@ -1,14 +1,15 @@
-#use "src/metro/eki_t.ml"
+#use "src/metro/eki_t.ml";;
 
 (* 目的 : eki_t型のリストと起点を受け取ったら、起点のsaitan_kyori=0., temae_list は始点の駅名からなるリストとなるようなeki_t型のリストを返す *)
 (* shokika : eki_t * list -> eki_t * list *)
-let rec shokika lst kiten =
-  match lst with
-  | [] -> []
-  | {namae = namae; saitan_kyori = saitan_kyori; temae_list = temae_list} as first :: rest ->
-    if namae = kiten
-    then {namae = kiten; saitan_kyori = 0.; temae_list = [kiten]} :: shokika rest kiten
-    else first :: shokika rest kiten
+let shokika lst kiten =
+  List.map (fun eki -> match eki with
+        {namae = n; saitan_kyori = s; temae_list = t} ->
+        if n = kiten
+        then {namae = kiten; saitan_kyori = 0.; temae_list = [kiten]}
+        else eki
+    )
+    lst
 
 (* test *)
 let test1 = shokika [] "茗荷谷" = []
