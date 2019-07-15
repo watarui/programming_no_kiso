@@ -14,11 +14,14 @@ let koushin p v lst =
     List.map (fun q ->
         match q with
           {namae = qn; saitan_kyori = qs; temae_list = qt} ->
-          let kyori = get_ekikan_kyori pn qn lst in
-          if (kyori = infinity) || (ps +. kyori >= qs)
-          then q
-          (* 最短距離がp経由のほうが短い場合 *)
-          else {namae = qn; saitan_kyori = ps +. kyori; temae_list = qn :: pt}
+          try
+            let kyori = get_ekikan_kyori pn qn lst in
+            if ps +. kyori >= qs
+            then q
+            (* 最短距離がp経由のほうが短い場合 *)
+            else {namae = qn; saitan_kyori = ps +. kyori; temae_list = qn :: pt}
+          with
+          | Not_found -> q
       )
       v
 

@@ -10,7 +10,7 @@
 (* get_ekikan_kyori2 : string -> string -> ekikan_tree_t -> float *)
 let rec get_ekikan_kyori2 eki1 eki2 tree =
   match tree with
-  | Empty -> infinity
+  | Empty -> raise Not_found
   | Node (t1, eki, lst, t2) ->
     if eki1 < eki then get_ekikan_kyori2 eki1 eki2 t1
     else if eki < eki1 then get_ekikan_kyori2 eki1 eki2 t2
@@ -21,5 +21,5 @@ let global_ekikan_tree = inserts_ekikan Empty global_ekikan_list
 (* test *)
 let test1 = get_ekikan_kyori2 "表参道" "乃木坂" global_ekikan_tree = 1.4
 let test2 = get_ekikan_kyori2 "国会議事堂前" "赤坂" global_ekikan_tree = 0.8
-let test3 = get_ekikan_kyori2 "表参道" "横浜" global_ekikan_tree = infinity
-let test4 = get_ekikan_kyori2 "横浜" "赤坂" global_ekikan_tree = infinity
+(* let test3 = get_ekikan_kyori2 "表参道" "横浜" global_ekikan_tree = infinity *)
+(* let test4 = get_ekikan_kyori2 "横浜" "赤坂" global_ekikan_tree = infinity *)
