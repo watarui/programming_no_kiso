@@ -1,4 +1,4 @@
-#use "src/metro/ekikan_t.ml"
+(* #use "src/metro/ekikan_t.ml" *)
 
 let global_ekikan_list = [
   {kiten="代々木上原"; shuten="代々木公園"; keiyu="千代田線"; kyori=1.0; jikan=2};
