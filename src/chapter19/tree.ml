@@ -13,8 +13,8 @@ let rec insert tree k v =
   match tree with
   | Empty -> Node (Empty, k, v, Empty)
   | Node (left, key, value, right) ->
-    if k < key
-    then Node (insert left k v, key, value, right)
+    if k = key then Node (left, key, v, right)
+    else if k < key then Node (insert left k v, key, value, right)
     else Node (left, key, value, insert right k v)
 
 (* 目的 : tree から k の value を探索して返す。ない場合は Not_found を投げる *)
