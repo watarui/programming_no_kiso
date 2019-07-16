@@ -27,7 +27,9 @@ let insert tree k v =
     match tree with
     | Empty -> Node (Empty, k, v, Red, Empty)
     | Node (left, key, value, color, right) ->
-      if k < key
+      if k = key
+      then Node (Empty, k, v, color, right)
+      else if k < key
       then balance (Node (insert' left, key, value, color, right))
       else balance (Node (left, key, value, color, insert' right)) in
   match insert' tree with
@@ -39,8 +41,10 @@ let tree2 = insert tree1 1 "a"
 let tree3 = insert tree2 10 "b"
 let tree4 = insert tree3 5 "c"
 let tree5 = insert tree4 7 "d"
+let tree6 = insert tree5 7 "e"
 
 let test2 = tree2 = Node (Empty, 1, "a", Black, Empty)
 let test3 = tree3 = Node (Empty, 1, "a", Black, Node (Empty, 10, "b", Red, Empty))
 let test4 = tree4 = Node (Node (Empty, 1, "a", Black, Empty), 5, "c", Black, Node (Empty, 10, "b", Black, Empty))
 let test5 = tree5 = Node (Node (Empty, 1, "a", Black, Empty), 5, "c", Black, Node (Node (Empty, 7, "d", Red, Empty), 10, "b", Black, Empty))
+let test6 = tree6 = Node (Node (Empty, 1, "a", Black, Empty), 5, "c", Black, Node (Node (Empty, 7, "e", Red, Empty), 10, "b", Black, Empty))
