@@ -7,6 +7,7 @@ open RedBlack;;
 #use "src/metro/global_ekimei_list.ml";;
 #use "src/metro/ekikan_t.ml";;
 #use "src/metro/global_ekikan_list.ml";;
+#use "src/metro/print_eki.ml";;
 
 #use "src/metro/ekikan_tree_t.ml";;
 
