@@ -29,7 +29,7 @@ let insert tree k v =
           -> Node (Node (a, xl, xr, Black, b), yl, yr, Red, Node (c, zl, zr, Black, d))
         | _ -> tree in
       if k = key
-      then Node (Empty, k, v, color, right)
+      then Node (left, k, v, color, right)
       else if k < key
       then balance (Node (insert' left, key, value, color, right))
       else balance (Node (left, key, value, color, insert' right)) in
