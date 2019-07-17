@@ -97,7 +97,8 @@ let insert (h_ref, array) r a =
     begin
       array.(idx) <- (i, r, a);
       adjust_parent array idx;
-      (i, (idx + 1, array));
+      h_ref := idx + 1;
+      (i, (h_ref, array));
     end
 
 (* ヒープの index 番目の要素を返す *)
