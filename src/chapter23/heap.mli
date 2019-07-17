@@ -23,3 +23,7 @@ val set : ('a, 'b) t -> index_t -> 'a -> 'b -> ('a, 'b) t
 (* 最小の値を持つものとそれを取り除いたヒープの組を返す（破壊的） *)
 (* 使い方 : split_top heap *)
 val split_top : ('a, 'b) t -> ('a * 'b) * ('a, 'b) t
+
+exception Full
+
+exception Empty
