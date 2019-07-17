@@ -31,3 +31,8 @@ _opam/
 book-data/
 
 OCamlMakefile
+
+# editors
+.vscode/
+.atom/
+.idea/

@@ -1,4 +1,4 @@
-## 関数型言語（OCaml）勉強用リポジトリ
+## 本を読んで勉強
 
 ### テキスト
 
@@ -7,6 +7,7 @@
 ### 環境構築
 
 ```sh
+# Mac
 brew install ocaml
 brew install opam
 brew install hg
@@ -22,6 +23,7 @@ opam install merlin
 opam user-setup install
 eval `opam config env`
 
+# VSCode
 code --install-extension freebroccolo.reasonml
 ```
 
@@ -38,4 +40,3 @@ code --install-extension freebroccolo.reasonml
 
 - [opam \- opam](https://opam.ocaml.org/)
 - [reasonml\-editor/vscode\-reasonml: OCaml & Reason support for Visual Studio Code](https://github.com/reasonml-editor/vscode-reasonml)
-- [opam \- ocaml command line cannot find “topfind” \- Stack Overflow](https://stackoverflow.com/questions/47508389/ocaml-command-line-cannot-find-topfind)
