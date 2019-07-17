@@ -1,6 +1,9 @@
 open Metro;;
 open RedBlack;;
 
+(* RedBlack.insert と衝突するのでコメントアウト *)
+(* open Heap;; *)
+
 (* グラフの中の節（駅）を表すレコード型 *)
 type eki_t = {
   namae : string; (* 駅名 *)
@@ -13,15 +16,11 @@ type ekikan_tree_t = Empty
                    (* 駅名（漢字）, [(その駅に直接つながっている駅名（漢字）, その駅までの距離), ...] *)
                    | Node of ekikan_tree_t * string * (string * float) list * ekikan_tree_t
 
-(*
-#use "src/metro/eki_t.ml";;
-#use "src/metro/global_ekimei_list.ml";;
-#use "src/metro/ekikan_t.ml";;
-#use "src/metro/global_ekikan_list.ml";;
-#use "src/metro/print_eki.ml";;
+(* 未確定駅の最短距離、駅名、手前リストを持つヒープ型 *)
+(* type heap_t = (float, string * string list) Heap.t *)
 
-#use "src/metro/ekikan_tree_t.ml";;
-*)
+(* 各駅のヒープ中の位置を表す木の型。index_t は Heap で定義済み *)
+(* type index_tree_t = (string, index_t) Tree.t *)
 
 (* 目的：昇順に並んでいる lst の正しい位置に ekimei を挿入する *)
 (* ekimei_insert : ekimei_t list -> ekimei_t -> ekimei_t list *)
@@ -100,41 +99,51 @@ let get_ekikan_kyori eki1 eki2 tree = List.assoc eki2 (search tree eki1)
 
 let global_ekikan_tree = inserts_ekikan empty global_ekikan_list
 
-(* 目的 : 直前に確定した駅pと未確定の駅のリストvを受け取り、更新処理後の未確定の駅のリストを返す *)
-(* koushin : eki_t -> eki_t list -> ekikan_tree_t -> eki_t list *)
-let koushin p v lst =
-  match p with
-    {namae = pn; saitan_kyori = ps; temae_list = pt} ->
-    List.map (fun q ->
-        match q with
-          {namae = qn; saitan_kyori = qs; temae_list = qt} ->
-          try
-            let kyori = get_ekikan_kyori pn qn lst in
-            if ps +. kyori >= qs
-            then q
-            (* 最短距離がp経由のほうが短い場合 *)
-            else {namae = qn; saitan_kyori = ps +. kyori; temae_list = qn :: pt}
-          with
-          | Not_found -> q
-      )
-      v
+(* 目的：ekikan_tree から eki_heap と index_tree を作り、kiten を初期化する *)
+(* make_eki_heap_and_index_tree : string -> ekikan_tree_t -> heap_t * index_tree_t *)
+let make_eki_heap_and_index_tree kiten ekikan_tree =
+  traverse (fun (eki_heap, index_tree) k lst ->
+      let (index, heap) = Heap.insert eki_heap
+          (if k = kiten then 0. else infinity)
+          (k, if k = kiten then [k] else []) in
+      let index_tree' = insert index_tree k index in
+      (heap, index_tree'))
+    ((Heap.create (length ekikan_tree) 0. ("駅名", [])), empty)
+    ekikan_tree
 
-(* 目的 : eki_t list型の未確定の駅のリストと、ekikan_tree_t 型の木を受け取り、各駅について最短距離と最短経路が正しく入ったリストを返す *)
-(* dijkstra_main : eki_t list -> ekikan_tree_t -> eki_t list *)
-let rec dijkstra_main eki_list tree =
-  match eki_list with
-  | [] -> []
-  | first :: rest ->
-    let (saitan, except) = saitan_wo_bunri first rest in
-    saitan :: dijkstra_main (koushin saitan except tree) tree
+(* 目的：確定した駅に接続している駅の最短距離、手前リストを更新する *)
+(* koushin : string -> float -> string list -> heap_t -> ekikan_tree_t -> index_tree_t -> heap_t *)
+let koushin pn ps pt eki_heap ekikan_tree index_tree =
+  let lst = search ekikan_tree pn in
+  List.fold_left (fun eki_heap (shuten, kyori) ->
+      try
+        let shuten_index = search index_tree shuten in
+        let (saitan_kyori, (n, _)) = Heap.get eki_heap shuten_index in
+        let new_saitan_kyori = ps +. kyori in
+        if new_saitan_kyori <= saitan_kyori
+        then Heap.set eki_heap shuten_index new_saitan_kyori (n, (n :: pt))
+        else eki_heap
+      with
+      | Not_found -> eki_heap)
+    eki_heap
+    lst
+
+(* 目的：未確定駅のリストと駅間リストから、各駅への最短路を求める *)
+(* dijkstra_main : heap_t -> ekikan_tree_t -> index_tree_t -> eki_t list *)
+let rec dijkstra_main eki_heap ekikan_tree index_tree =
+  if Heap.length eki_heap = 0
+  then []
+  else let ((ps, (pn, pt)), rest_heap) = Heap.split_top eki_heap in
+    let eki_heap2 = koushin pn ps pt rest_heap ekikan_tree index_tree in
+    {namae = pn; saitan_kyori = ps; temae_list = pt} :: dijkstra_main eki_heap2 ekikan_tree index_tree
 
 (* 目的 : 始点のローマ字駅名と、終点のローマ字駅名を受け取り、ダイクストラ法に従って最短経路を求め、そのレコードを返す *)
 (* dijkstra : string -> string -> eki_t *)
 let dijkstra shiten shuten =
   let kanji_shiten = romaji_to_kanji shiten sorted_global_ekimei_list in
   let kanji_shuten = romaji_to_kanji shuten sorted_global_ekimei_list in
-  let eki_list = make_initial_eki_list sorted_global_ekimei_list kanji_shiten in
-  let eki_list' = dijkstra_main eki_list global_ekikan_tree in
+  let (eki_heap, index_tree) = make_eki_heap_and_index_tree kanji_shiten global_ekikan_tree in
+  let eki_list = dijkstra_main eki_heap global_ekikan_tree index_tree in
   let rec get_shuten_record kanji_shuten lst =
     match lst with
     | [] -> {namae = ""; saitan_kyori = infinity; temae_list = []}
@@ -142,7 +151,7 @@ let dijkstra shiten shuten =
       if n = kanji_shuten
       then first
       else get_shuten_record kanji_shuten rest in
-  get_shuten_record kanji_shuten eki_list'
+  get_shuten_record kanji_shuten eki_list
 
 (* 目的 : eki_t 型の値をきれいに表示するk *)
 (* print_eki : eki_t -> unit *)
